@@ -34,7 +34,6 @@ class JwtService:
 
 
 def get_jwt_service(settings: Settings = Depends(Settings)) -> JwtService:
-    # encoded_secret = "5zwMNKZym9hl1vS4LwJvQ5NCbVFxKT1shFBXjEXXoHM="
     
     #NOTE - DO NOT REMOVE THE '=' SYMBOL BELOW
     encoded_secret = settings.JWT_SECRET + "="
