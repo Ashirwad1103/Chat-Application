@@ -31,13 +31,17 @@ class JwtService:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="'Token has expired'")
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        except Exception as e: 
+            import traceback
+            traceback.print_exc()
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Something went wrong")
 
 
 def get_jwt_service(settings: Settings = Depends(Settings)) -> JwtService:
     
     #NOTE - DO NOT REMOVE THE '=' SYMBOL BELOW
     encoded_secret = settings.JWT_SECRET + "="
-    print(f"{encoded_secret=}")
+    # print(f"{encoded_secret=}")
     secret_base64_decoded = base64.urlsafe_b64decode(encoded_secret.encode('utf-8'))
     algorithm = settings.JWT_ALGORITHM
     jwt_service = JwtService(secret=secret_base64_decoded, algorithm=algorithm)

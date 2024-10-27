@@ -89,8 +89,12 @@ class MessageService:
         after the client closes the connection from its end check whether the connection is removed from the connection pool or not 
         '''
         
-        await websocket.accept()
-        
+        try:
+            await websocket.accept()
+        except WebSocketDisconnect: 
+            print("Websocket disconnected while accepting the connection")
+            return
+
         ic(user_info, "connected")
         
         user_email = user_info["email"]
@@ -116,12 +120,13 @@ class MessageService:
                 continue
 
             group_id = data.get("group_id")
+            #NOTE - should have a condition to handle when group id is not sent in the payload.
+
             ic(group_id)
             group_members = await group_service.get_group_members(group_id=group_id)
             member_emails = [member["user_email"] for member in group_members]
 
             await self.broadcast_message(data=message_doc, member_emails=member_emails)
-            print("returned after exception")
 
 def get_message_service(mongo_client: MongoDBClient = Depends(get_mongo_client)) -> MessageService:
     return MessageService(mongo_client=mongo_client)

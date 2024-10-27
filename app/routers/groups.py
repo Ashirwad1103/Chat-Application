@@ -11,7 +11,7 @@ group_router = APIRouter()
 @group_router.post("/create", status_code=status.HTTP_201_CREATED, response_description="Group created!")
 async def create_group(
     group: Group,
-    # jwt_payload: dict = Depends(get_current_user),
+    user_info: dict = Depends(get_current_user),
     group_service: GroupService = Depends(get_group_service)
     ):
     return await group_service.create_group(group=group)
@@ -20,7 +20,7 @@ async def create_group(
 @group_router.post("/join", status_code=status.HTTP_200_OK, response_description="Group joined Successfully!")
 async def join_group(
     join_group_request: JoinGroup,
-    # jwt_payload: dict = Depends(get_current_user),
+    user_info: dict = Depends(get_current_user),
     user_service: UserService = Depends(get_user_service),
     group_service: GroupService = Depends(get_group_service)
     ):
@@ -34,7 +34,7 @@ async def join_group(
 @group_router.get("/members", status_code=status.HTTP_200_OK, response_description="Members list!")
 async def get_group_members(
     group_id: str, 
-    # jwt_payload: dict = Depends(get_current_user),
+    user_info: dict = Depends(get_current_user),
     group_service: GroupService = Depends(get_group_service)
     ):
 
